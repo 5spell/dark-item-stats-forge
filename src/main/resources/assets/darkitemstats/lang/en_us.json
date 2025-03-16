@@ -2,5 +2,7 @@
   "item.darkitemstats.ruby": "Ruby",
   "item.darkitemstats.sapphire": "Sapphire",
 
+  "block.darkitemstats.sapphire_block": "Sapphire Block",
+
   "creativetab.main_tab": "Dark Item Stats"
 }

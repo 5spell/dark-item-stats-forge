@@ -8,6 +8,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import net.vspell.darkitemstats.DarkItemStats;
+import net.vspell.darkitemstats.block.ModBlocks;
 
 
 public class ModCreativeTabs {
@@ -19,15 +20,19 @@ public class ModCreativeTabs {
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModItems.RUBY.get()))
                     .title(Component.translatable("creativetab.main_tab"))
                     .displayItems((pParameters, pOutput) -> {
-                        // adding items to the tab (I have no idea how this works)
+
+                        //adding items to the tab (I have no idea how this works)
                         pOutput.accept(ModItems.RUBY.get());
                         pOutput.accept(ModItems.SAPPHIRE.get());
+
+                        //blocks
+                        pOutput.accept(ModBlocks.SAPPHIRE_BLOCK.get());
 
                     })
                     .build());
 
 
-    public static void register(IEventBus eventBus){
+    public static void registerCTabs(IEventBus eventBus){
         CREATIVE_MODE_TABS.register(eventBus);
     }
 

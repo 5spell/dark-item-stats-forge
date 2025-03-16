@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.vspell.darkitemstats.block.ModBlocks;
 import net.vspell.darkitemstats.item.ModCreativeTabs;
 import net.vspell.darkitemstats.item.ModItems;
 import org.slf4j.Logger;
@@ -26,8 +27,9 @@ public class DarkItemStats {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus(); //this warning is fine
         modEventBus.addListener(this::commonSetup); // looks at commonSetup's params and automatically adds it as a listener for the FMLCommonSetupEvent event (dawg this shi crazy frfr)
 
-        ModCreativeTabs.register(modEventBus); // register creative tabs
-        ModItems.register(modEventBus); // register items
+        ModCreativeTabs.registerCTabs(modEventBus); // register creative tabs
+        ModItems.registerItems(modEventBus); // register items
+        ModBlocks.registerBlocks(modEventBus); // register blocks
 
         MinecraftForge.EVENT_BUS.register(this);
 
