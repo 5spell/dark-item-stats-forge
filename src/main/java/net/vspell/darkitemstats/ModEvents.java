@@ -11,6 +11,9 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -55,6 +58,16 @@ public class ModEvents {
                                 AttributeModifier.Operation.ADDITION)
                 );
             }
+
+            if (tag.contains("PhysicalDamageBonus") && ((ArmorItem) stack.getItem()).getEquipmentSlot() == event.getSlotType()){
+
+                event.addModifier(Attributes.ATTACK_DAMAGE,
+                        new AttributeModifier(genUUID(stack, "physical_damage_bonus_", "PhysicalDamageBonus"),
+                                "Physical Damage Bonus",
+                                tag.getDouble("PhysicalDamageBonus"),
+                                AttributeModifier.Operation.MULTIPLY_BASE)
+                );
+            }
         }
     }
 
@@ -65,9 +78,13 @@ public class ModEvents {
 
     private static void applyTags(ItemStack stack){
 
+        String[] rarities = {"Common", "Uncommon", "Rare", "Epic", "Legendary"};
+
         Random random = new Random(); // making an instance of the Random class
         int bonusArmor = random.nextInt(1, 5);
         int bonusArmorToughness = random.nextInt(1, 4);
+        double bonusPhysicalDamage = (double) Math.round(random.nextDouble(0.01, 0.07) * 100) / 100;
+        String rarity = rarities[random.nextInt(rarities.length)];
 
 
         if(stack.getTag() == null) {
@@ -76,7 +93,8 @@ public class ModEvents {
 
         stack.getTag().putInt("BonusArmor", bonusArmor);
         stack.getTag().putInt("BonusArmorToughness", bonusArmorToughness);
+        stack.getTag().putDouble("PhysicalDamageBonus", bonusPhysicalDamage);
+        stack.getTag().putString("Rarity", rarity);
 
     }
-
 }
