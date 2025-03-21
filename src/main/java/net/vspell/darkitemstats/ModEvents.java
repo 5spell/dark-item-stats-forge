@@ -18,7 +18,7 @@ import java.util.UUID;
 @Mod.EventBusSubscriber(modid = DarkItemStats.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ModEvents {
 
-    public static final UUID BONUS_ARMOR_UUID = UUID.fromString("a5a9c4ea-3560-4f72-9713-aee4a01c9476");
+    private static final UUID BONUS_ARMOR_UUID = UUID.fromString("a5a9c4ea-3560-4f72-9713-aee4a01c9476");
 
     @SubscribeEvent
     public static void onItemCraft(PlayerEvent.ItemCraftedEvent event){
@@ -38,7 +38,7 @@ public class ModEvents {
 
         if (item instanceof ArmorItem && tag != null){
 
-            if (tag.contains("BonusArmor") && LivingEntity.getEquipmentSlotForItem(stack) == event.getSlotType()){
+            if (tag.contains("BonusArmor") && ((ArmorItem) stack.getItem()).getEquipmentSlot() == event.getSlotType()){
                 event.addModifier(Attributes.ARMOR,
                         new AttributeModifier(BONUS_ARMOR_UUID ,"Bonus Armor", tag.getInt("BonusArmor"), AttributeModifier.Operation.ADDITION));
             }

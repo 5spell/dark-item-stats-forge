@@ -9,6 +9,8 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.List;
+
 
 @Mod.EventBusSubscriber(modid = DarkItemStats.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class TooltipHandler {
@@ -20,13 +22,20 @@ public class TooltipHandler {
 
         if (stack.getItem() instanceof ArmorItem && stack.hasTag()){
             CompoundTag tag = stack.getTag();
+            List<Component> tooltip = event.getToolTip();
 
             if (tag.contains("BonusArmor")){
                 event.getToolTip().add(
-                        Component.literal("+" + tag.getInt("BonusArmor") + "Additional Armor")
+                        Component.literal("+" + tag.getInt("BonusArmor") + " Additional Armor")
                                 .withStyle(ChatFormatting.BLUE)
                 );
+
+                tooltip.removeIf(line -> line.getString().equals("+" + tag.getInt("BonusArmor") + " Armor"));
+
             }
+
+
+
         }
     }
 }
