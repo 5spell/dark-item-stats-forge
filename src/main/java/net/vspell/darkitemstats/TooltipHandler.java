@@ -29,13 +29,31 @@ public class TooltipHandler {
                         Component.literal("+" + tag.getInt("BonusArmor") + " Additional Armor")
                                 .withStyle(ChatFormatting.BLUE)
                 );
-
-                tooltip.removeIf(line -> line.getString().equals("+" + tag.getInt("BonusArmor") + " Armor"));
-
+                removeTooltipLines(tooltip, tag, "BonusArmor", "Armor");
             }
 
-
+            if (tag.contains("BonusArmorToughness")){
+                event.getToolTip().add(
+                        Component.literal("+" + tag.getInt("BonusArmorToughness") + " Additional Armor Toughness")
+                                .withStyle(ChatFormatting.BLUE)
+                );
+                removeTooltipLines(tooltip, tag, "BonusArmorToughness", "Armor Toughness");
+            }
 
         }
     }
+
+    private static void removeTooltipLines(List<Component> tooltip, CompoundTag tag, String attModName, String linePostfix){
+
+        //Looping through the tooltip lines and deleting the one added by the attribute modifier
+        for (int i = 0; i < tooltip.size() ; i++) {
+
+            if (tooltip.get(i).getString().equals("+" + tag.getInt(attModName) + " " + linePostfix)){ //concat result: + X *vanilla postfix*
+                tooltip.remove(i);
+                break;
+            }
+        }
+
+    }
+
 }
