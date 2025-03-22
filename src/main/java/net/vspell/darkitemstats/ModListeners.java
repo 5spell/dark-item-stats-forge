@@ -15,7 +15,7 @@ import java.util.Random;
 import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = DarkItemStats.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class ModEvents {
+public class ModListeners {
 
     @SubscribeEvent
     public static void onItemCraft(PlayerEvent.ItemCraftedEvent event){
@@ -74,15 +74,11 @@ public class ModEvents {
     }
 
     private static void applyTags(ItemStack stack){
-
-        String[] rarities = {"Common", "Uncommon", "Rare", "Epic", "Legendary"};
-
         Random random = new Random(); // making an instance of the Random class
+
         int bonusArmor = random.nextInt(1, 5);
         int bonusArmorToughness = random.nextInt(1, 4);
         double bonusPhysicalDamage = (double) Math.round(random.nextDouble(0.01, 0.07) * 100) / 100;
-        String rarity = rarities[random.nextInt(rarities.length)];
-
 
         if(stack.getTag() == null) {
             stack.setTag(new CompoundTag());
@@ -91,7 +87,6 @@ public class ModEvents {
         stack.getTag().putInt("BonusArmor", bonusArmor);
         stack.getTag().putInt("BonusArmorToughness", bonusArmorToughness);
         stack.getTag().putDouble("PhysicalDamageBonus", bonusPhysicalDamage);
-        stack.getTag().putString("Rarity", rarity);
-
+        stack.getTag().putString("Rarity", Rarities.selectRarity(Rarities.DEFAULT_RARITY_ARRAY, Rarities.DEFAULT_PROBABILITY_ARRAY));
     }
 }
