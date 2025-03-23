@@ -9,6 +9,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,32 +31,39 @@ public class TooltipHandler {
             customLines.add(Component.empty()); //spacer
 
             if (tag.contains("Rarity")){
-                ChatFormatting Color;
-                switch (tag.getString("Rarity")){
+                ChatFormatting color;
+                String rarName;
+                switch (tag.getInt("Rarity")){
                     default:
-                        Color = ChatFormatting.WHITE;
+                        color = ChatFormatting.WHITE;
+                        rarName = "Common";
 
-                    case "Common":
-                        Color = ChatFormatting.WHITE;
+                    case 0:
+                        color = ChatFormatting.WHITE;
+                        rarName = "Common";
                         break;
 
-                    case "Uncommon":
-                        Color = ChatFormatting.GREEN;
+                    case 1:
+                        color = ChatFormatting.GREEN;
+                        rarName = "Uncommon";
                         break;
 
-                    case "Rare":
-                        Color = ChatFormatting.BLUE;
+                    case 2:
+                        color = ChatFormatting.BLUE;
+                        rarName = "Rare";
                         break;
 
-                    case "Epic":
-                        Color = ChatFormatting.DARK_PURPLE;
+                    case 3:
+                        color = ChatFormatting.DARK_PURPLE;
+                        rarName = "Epic";
                         break;
 
-                    case "Legendary":
-                        Color = ChatFormatting.GOLD;
+                    case 4:
+                        color = ChatFormatting.GOLD;
+                        rarName = "Legendary";
                         break;
                 }
-                customLines.add(Component.literal(tag.getString("Rarity") + " Item").withStyle(Color));
+                customLines.add(Component.literal( rarName + " Item").withStyle(color));
             }
 
             customLines.add(Component.empty());
@@ -65,7 +73,8 @@ public class TooltipHandler {
                         Component.literal("+" + tag.getInt("BonusArmorToughness") + " Additional Armor Toughness")
                                 .withStyle(ChatFormatting.BLUE)
                 );
-                removeTooltipLinesInt(tooltip, tag, "BonusArmorToughness", "Armor Toughness");
+                String tLine = tag.getInt("BonusArmorToughness") + " Armor Toughness";
+                removeTooltipLinesContaining(tooltip, tLine);
             }
 
             if (tag.contains("BonusArmor")){
@@ -73,7 +82,8 @@ public class TooltipHandler {
                         Component.literal("+" + tag.getInt("BonusArmor") + " Additional Armor")
                                 .withStyle(ChatFormatting.BLUE)
                 );
-                removeTooltipLinesInt(tooltip, tag, "BonusArmor", "Armor");
+                String tLine = tag.getInt("BonusArmor") + " Armor";
+                removeTooltipLinesContaining(tooltip, tLine);
             }
 
             if (tag.contains("PhysicalDamageBonus")){
@@ -81,36 +91,27 @@ public class TooltipHandler {
                         Component.literal("+" + (int)(tag.getDouble("PhysicalDamageBonus") * 100) + "% Physical Damage Bonus")
                                 .withStyle(ChatFormatting.BLUE)
                 );
-                removeTooltipLinesDouble(tooltip, tag, "PhysicalDamageBonus", "Attack Damage");
+                String tLine = (int)(tag.getDouble("PhysicalDamageBonus") * 100) + "% Attack Damage";
+                removeTooltipLinesContaining(tooltip, tLine);
             }
 
-
+            if (tag.contains("KnockbackResistance")){
+                customLines.add(
+                        Component.literal("+" + (int)(tag.getDouble("KnockbackResistance") * 100) + "% Knockback Resistance")
+                                .withStyle(ChatFormatting.BLUE)
+                );
+                String tLine = String.format("%.1f", (tag.getDouble("KnockbackResistance") * 10)) + " Knockback Resistance";
+                removeTooltipLinesContaining(tooltip, tLine);
+            }
 
             tooltip.addAll(tooltip.size() - 2, customLines);
         }
     }
 
-    private static void removeTooltipLinesInt(List<Component> tooltip, CompoundTag tag, String attModName, String linePostfix){
-
-        //Looping through the tooltip lines and deleting the one added by the attribute modifier
-        for (int i = 0; i < tooltip.size() ; i++) {
-
-            if (tooltip.get(i).getString().equals("+" + tag.getInt(attModName) + " " + linePostfix)){ //concat result: + X *vanilla postfix*
-                tooltip.remove(i);
-                break;
-            }
-        }
+    private static void removeTooltipLinesContaining(List<Component> tooltip, String targetSubstring) {
+        tooltip.removeIf(line -> {
+            String strippedText = ChatFormatting.stripFormatting(line.getString()).trim();
+            return strippedText.contains(targetSubstring);
+        });
     }
-
-    private static void removeTooltipLinesDouble(List<Component> tooltip, CompoundTag tag, String attModName, String linePostfix){
-
-        for (int i = 0; i < tooltip.size() ; i++) {
-
-            if (tooltip.get(i).getString().equals("+" + (int)(tag.getDouble(attModName) * 100) + "% " + linePostfix)){ //concat result: + X% *vanilla postfix*
-                tooltip.remove(i);
-                break;
-            }
-        }
-    }
-
 }

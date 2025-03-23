@@ -11,7 +11,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.Random;
 import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = DarkItemStats.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -19,11 +18,10 @@ public class ModListeners {
 
     @SubscribeEvent
     public static void onItemCraft(PlayerEvent.ItemCraftedEvent event){
-
         ItemStack item = event.getCrafting();
 
         if(item.getItem() instanceof ArmorItem){
-            applyTags(item);
+            ModTags.applyRandomTags(item);
         }
     }
 
@@ -65,28 +63,20 @@ public class ModListeners {
                                 AttributeModifier.Operation.MULTIPLY_BASE)
                 );
             }
+
+            if (tag.contains("KnockbackResistance") && ((ArmorItem) stack.getItem()).getEquipmentSlot() == event.getSlotType()){
+
+                event.addModifier(Attributes.KNOCKBACK_RESISTANCE,
+                        new AttributeModifier(genUUID(stack, "knockback_resistance_", "KnockbackResistance"),
+                                "Knockback Resistance",
+                                tag.getDouble("KnockbackResistance"),
+                                AttributeModifier.Operation.ADDITION)
+                );
+            }
         }
     }
 
     private static UUID genUUID(ItemStack stack, String prefix, String tagName){
-        assert stack.getTag() != null;
         return UUID.nameUUIDFromBytes((prefix + stack.getTag().getInt(tagName)).getBytes());
-    }
-
-    private static void applyTags(ItemStack stack){
-        Random random = new Random(); // making an instance of the Random class
-
-        int bonusArmor = random.nextInt(1, 5);
-        int bonusArmorToughness = random.nextInt(1, 4);
-        double bonusPhysicalDamage = (double) Math.round(random.nextDouble(0.01, 0.07) * 100) / 100;
-
-        if(stack.getTag() == null) {
-            stack.setTag(new CompoundTag());
-        }
-
-        stack.getTag().putInt("BonusArmor", bonusArmor);
-        stack.getTag().putInt("BonusArmorToughness", bonusArmorToughness);
-        stack.getTag().putDouble("PhysicalDamageBonus", bonusPhysicalDamage);
-        stack.getTag().putString("Rarity", Rarities.selectRarity(Rarities.DEFAULT_RARITY_ARRAY, Rarities.DEFAULT_PROBABILITY_ARRAY));
     }
 }
