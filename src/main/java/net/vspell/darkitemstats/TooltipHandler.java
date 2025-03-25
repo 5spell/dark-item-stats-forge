@@ -9,7 +9,6 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,6 +100,15 @@ public class TooltipHandler {
                                 .withStyle(ChatFormatting.BLUE)
                 );
                 String tLine = String.format("%.1f", (tag.getDouble("KnockbackResistance") * 10)) + " Knockback Resistance";
+                removeTooltipLinesContaining(tooltip, tLine);
+            }
+
+            if (tag.contains("BonusMovespeed")){
+                customLines.add(
+                        Component.literal("+" + (int)(tag.getDouble("BonusMovespeed") * 100) + "% Bonus Movement Speed")
+                                .withStyle(ChatFormatting.BLUE)
+                );
+                String tLine = (int)(tag.getDouble("BonusMovespeed") * 100) + "% Speed";
                 removeTooltipLinesContaining(tooltip, tLine);
             }
 

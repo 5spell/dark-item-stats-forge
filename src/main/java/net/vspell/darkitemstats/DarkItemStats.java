@@ -27,9 +27,9 @@ public class DarkItemStats {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus(); //this warning is fine
         modEventBus.addListener(this::commonSetup); // looks at commonSetup's params and automatically adds it as a listener for the FMLCommonSetupEvent event (dawg this shi crazy frfr)
 
-        ModCreativeTabs.registerCTabs(modEventBus); // register creative tabs
-        ModItems.registerItems(modEventBus); // register items
-        ModBlocks.registerBlocks(modEventBus); // register blocks
+        ModCreativeTabs.register(modEventBus); // register creative tabs
+        ModItems.register(modEventBus); // register items
+        ModBlocks.register(modEventBus); // register blocks
 
         MinecraftForge.EVENT_BUS.register(this);
 

@@ -1,8 +1,6 @@
 package net.vspell.darkitemstats.item;
 
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -18,7 +16,7 @@ public class ModItems {
     public static final RegistryObject<Item> SAPPHIRE = ITEM_REGISTER.register("sapphire",() -> new Item(new Item.Properties()));
 
 
-    public static void registerItems(IEventBus eventBus){
+    public static void register(IEventBus eventBus){
         ITEM_REGISTER.register(eventBus);
     }
 

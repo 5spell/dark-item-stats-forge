@@ -13,15 +13,29 @@ public class ModTags {
     public static final int[] RARITY_ARRAY = {4, 3, 2, 1, 0}; //as amount of enchants
     public static final double[] PROBABILITY_ARRAY = {0.01, 0.49, 0.5, 0, 0};
 
-    private static final Map<String, Supplier<Object>> ENCHANTMENTS = new HashMap<>();
+    public static final Map<String, Supplier<Object>> ARMOR_ENCHANTMENTS_POOL = new HashMap<>();
     static {
-        ENCHANTMENTS.put("BonusArmor", () -> RANDOM.nextInt(1, 5));
-        ENCHANTMENTS.put("BonusArmorToughness", () -> RANDOM.nextInt(1, 4));
-        ENCHANTMENTS.put("PhysicalDamageBonus", () -> (double) Math.round(RANDOM.nextDouble(0.01, 0.07) * 100) / 100);
-        ENCHANTMENTS.put("KnockbackResistance", () -> (double) Math.round(RANDOM.nextDouble(0.1, 0.6) * 100) / 100);
+        ARMOR_ENCHANTMENTS_POOL.put("BonusArmor", () -> RANDOM.nextInt(1, 5));
+        ARMOR_ENCHANTMENTS_POOL.put("BonusArmorToughness", () -> RANDOM.nextInt(1, 4));
+        ARMOR_ENCHANTMENTS_POOL.put("PhysicalDamageBonus", () -> (double) Math.round(RANDOM.nextDouble(0.1, 0.3) * 100) / 100);
+        ARMOR_ENCHANTMENTS_POOL.put("KnockbackResistance", () -> (double) Math.round(RANDOM.nextDouble(0.1, 0.6) * 100) / 100);
     } // apparently this is a thing
 
-    public static int rollRarity(int[] rarities, double[] probabilities) { // dark probability magic
+    public static final Map<String, Supplier<Object>> BOOTS_ENCHANTMENTS_POOL = new HashMap<>();
+    static {
+        BOOTS_ENCHANTMENTS_POOL.put("BonusArmor", () -> RANDOM.nextInt(1, 5));
+        BOOTS_ENCHANTMENTS_POOL.put("BonusArmorToughness", () -> RANDOM.nextInt(1, 4));
+        BOOTS_ENCHANTMENTS_POOL.put("PhysicalDamageBonus", () -> (double) Math.round(RANDOM.nextDouble(0.1, 0.3) * 100) / 100);
+        BOOTS_ENCHANTMENTS_POOL.put("KnockbackResistance", () -> (double) Math.round(RANDOM.nextDouble(0.1, 0.6) * 100) / 100);
+        BOOTS_ENCHANTMENTS_POOL.put("BonusMovespeed", () -> (double) Math.round(RANDOM.nextDouble(0.1, 0.3) * 100) / 100);
+    }
+
+    public static final Map<String, Supplier<Object>> TIERED_ENCHANTMENTS_POOL = new HashMap<>();
+    static {
+        
+    }
+
+    public static int rollRarity(int[] rarities, double[] probabilities){ // dark probability magic
         double roll = RANDOM.nextDouble(); // Random value between 0.0 and 1.0
         double cumulativeProbability = 0.0;
 
@@ -35,9 +49,10 @@ public class ModTags {
         return rarities[rarities.length - 1]; // Default to the last rarity if no match
     }
 
-    public static void applyRandomTags(ItemStack stack){
+    public static void applyRandomModifierTagsToNBT(ItemStack stack, Map<String, Supplier<Object>> enchantPool){
+
         int rarity = rollRarity(RARITY_ARRAY, PROBABILITY_ARRAY);
-        List<String> keys = new ArrayList<>(ENCHANTMENTS.keySet());
+        List<String> keys = new ArrayList<>(enchantPool.keySet());
         Set<String> selectedEnchants = new HashSet<>();
         CompoundTag tag = stack.getTag();
         Collections.shuffle(keys);
@@ -53,7 +68,7 @@ public class ModTags {
         }
 
         for (String attKey : selectedEnchants) {
-            Object att = ENCHANTMENTS.get(attKey).get();
+            Object att = enchantPool.get(attKey).get();
 
             if (att instanceof Integer){
                 tag.putInt(attKey, (Integer) att);

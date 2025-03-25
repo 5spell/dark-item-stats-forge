@@ -35,7 +35,7 @@ public class ModBlocks {
         return ModItems.ITEM_REGISTER.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
     }
 
-    public static void registerBlocks(IEventBus eventBus){
+    public static void register(IEventBus eventBus){
         BLOCK_REGISTER.register(eventBus);
     }
 

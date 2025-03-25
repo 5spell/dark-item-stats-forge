@@ -1,11 +1,13 @@
 package net.vspell.darkitemstats;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TieredItem;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -18,11 +20,24 @@ public class ModListeners {
 
     @SubscribeEvent
     public static void onItemCraft(PlayerEvent.ItemCraftedEvent event){
-        ItemStack item = event.getCrafting();
+        ItemStack stack = event.getCrafting();
+        Item item = stack.getItem();
 
-        if(item.getItem() instanceof ArmorItem){
-            ModTags.applyRandomTags(item);
+//        if(stack.getItem() instanceof ArmorItem){
+//            ModTags.applyRandomModifierTagsToNBT(item, ModTags.ARMOR_ENCHANTMENTS_POOL);
+//        }
+        if (item instanceof ArmorItem){
+
+            if (((ArmorItem) item).getEquipmentSlot() == EquipmentSlot.FEET){
+                ModTags.applyRandomModifierTagsToNBT(stack, ModTags.BOOTS_ENCHANTMENTS_POOL);
+            } else{
+                ModTags.applyRandomModifierTagsToNBT(stack, ModTags.ARMOR_ENCHANTMENTS_POOL);
+            }
+
+        } else if (item instanceof TieredItem) {
+           //later
         }
+
     }
 
     @SubscribeEvent
@@ -31,9 +46,10 @@ public class ModListeners {
         Item item = stack.getItem();
         CompoundTag tag = stack.getTag();
 
-        if (item instanceof ArmorItem && tag != null){
+        if (item instanceof ArmorItem armor && tag != null){
 
-            if (tag.contains("BonusArmor") && ((ArmorItem) stack.getItem()).getEquipmentSlot() == event.getSlotType()){
+            // Generic Armor
+            if (tag.contains("BonusArmor") && armor.getEquipmentSlot() == event.getSlotType()){
 
                 event.addModifier(Attributes.ARMOR,
                         new AttributeModifier(
@@ -44,7 +60,7 @@ public class ModListeners {
                 );
             }
 
-            if (tag.contains("BonusArmorToughness") && ((ArmorItem) stack.getItem()).getEquipmentSlot() == event.getSlotType()){
+            if (tag.contains("BonusArmorToughness") && armor.getEquipmentSlot() == event.getSlotType()){
 
                 event.addModifier(Attributes.ARMOR_TOUGHNESS,
                         new AttributeModifier(genUUID(stack, "bonus_armor_toughness_", "BonusArmorToughness"),
@@ -54,7 +70,7 @@ public class ModListeners {
                 );
             }
 
-            if (tag.contains("PhysicalDamageBonus") && ((ArmorItem) stack.getItem()).getEquipmentSlot() == event.getSlotType()){
+            if (tag.contains("PhysicalDamageBonus") && armor.getEquipmentSlot() == event.getSlotType()){
 
                 event.addModifier(Attributes.ATTACK_DAMAGE,
                         new AttributeModifier(genUUID(stack, "physical_damage_bonus_", "PhysicalDamageBonus"),
@@ -64,13 +80,25 @@ public class ModListeners {
                 );
             }
 
-            if (tag.contains("KnockbackResistance") && ((ArmorItem) stack.getItem()).getEquipmentSlot() == event.getSlotType()){
+            if (tag.contains("KnockbackResistance") && armor.getEquipmentSlot() == event.getSlotType()){
 
                 event.addModifier(Attributes.KNOCKBACK_RESISTANCE,
                         new AttributeModifier(genUUID(stack, "knockback_resistance_", "KnockbackResistance"),
                                 "Knockback Resistance",
                                 tag.getDouble("KnockbackResistance"),
-                                AttributeModifier.Operation.ADDITION)
+                                AttributeModifier.Operation.ADDITION) // since the default is 0
+                );
+            }
+
+            // Boot modifiers
+            if (tag.contains("BonusMovespeed") && armor.getEquipmentSlot() == event.getSlotType()){
+
+                event.addModifier(Attributes.MOVEMENT_SPEED,
+                        new AttributeModifier(
+                                genUUID(stack, "bonus_movespeed_", "BonusMovespeed"),
+                                "Bonus Movespeed",
+                                tag.getDouble("BonusMovespeed"),
+                                AttributeModifier.Operation.MULTIPLY_BASE)
                 );
             }
         }
