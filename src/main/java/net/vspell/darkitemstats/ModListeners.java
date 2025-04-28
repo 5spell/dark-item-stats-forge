@@ -29,9 +29,9 @@ public class ModListeners {
         if (item instanceof ArmorItem){
 
             if (((ArmorItem) item).getEquipmentSlot() == EquipmentSlot.FEET){
-                ModTags.applyRandomModifierTagsToNBT(stack, ModTags.BOOTS_ENCHANTMENTS_POOL);
+                ModTags.applyRandomModifierTagsToNBT(stack, Rarity.DEFAULT_RARITY_PROBABILITY_MAP, AttributePool.BOOTS_POOL.getAsMap());
             } else{
-                ModTags.applyRandomModifierTagsToNBT(stack, ModTags.ARMOR_ENCHANTMENTS_POOL);
+                ModTags.applyRandomModifierTagsToNBT(stack, Rarity.DEFAULT_RARITY_PROBABILITY_MAP, AttributePool.ARMOR_POOL.getAsMap());
             }
 
         } else if (item instanceof TieredItem) {
